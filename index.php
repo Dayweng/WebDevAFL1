@@ -7,8 +7,12 @@ $controller = new BookController();
 $action = $_GET['action'] ?? 'index';
 
 // Simple routing mechanism
-if ($action === 'toggle') {
+if ($action === 'create') {
+    $controller->create();
+} elseif ($action === 'toggle') {
     $controller->toggle();
+} elseif ($action === 'delete') {
+    $controller->delete();
 } else {
     $controller->index();
 }
