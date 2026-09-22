@@ -30,7 +30,7 @@
             margin-bottom: 24px;
             flex-wrap: wrap;
         }
-        .add-form input, .modal-body input {
+        .add-form input, .edit-form input {
             flex: 1;
             min-width: 140px;
             padding: 8px 12px;
@@ -38,7 +38,7 @@
             border-radius: 4px;
             font-size: 14px;
         }
-        .add-form input:focus, .modal-body input:focus {
+        .add-form input:focus, .edit-form input:focus {
             outline: none;
             border-color: #007bff;
         }
@@ -82,7 +82,7 @@
         .btn-secondary { background: #e2e8f0; color: #4a5568; }
         .btn-secondary:hover { background: #cbd5e0; }
 
-        /* Modal Popup css */
+        /* Edit popup */
         .modal {
             display: none;
             position: fixed;
@@ -111,7 +111,8 @@
         <h2>Darren's Library Catalog</h2>
 
         <!-- create book -->
-        <form action="index.php?action=create" method="POST" class="add-form">
+        <form action="index.php" method="POST" class="add-form">
+            <input type="hidden" name="action" value="create">
             <input type="text" name="title" placeholder="Book Title" required>
             <input type="text" name="author" placeholder="Author" required>
             <button type="submit" class="btn btn-primary">Add Book</button>
@@ -141,21 +142,23 @@
                                 <?php endif; ?>
                             </td>
                             <td class="actions">
-                                <!-- Borrow return button -->
-                                <a href="index.php?action=toggle&id=<?= $book['id'] ?>" class="btn btn-toggle">
-                                    <?= $book['is_borrowed'] ? 'Return' : 'Borrow' ?>
-                                </a>
-                                <!-- edit button -->
+                                <form action="index.php" method="POST" class="edit-form">
+                                    <input type="hidden" name="action" value="toggle">
+                                    <input type="hidden" name="id" value="<?= $book['id'] ?>">
+                                    <button type="submit" class="btn btn-toggle">
+                                        <?= $book['is_borrowed'] ? 'Return' : 'Borrow' ?>
+                                    </button>
+                                </form>
                                 <button type="button"
                                         class="btn btn-warning"
                                         onclick="openEditModal(<?= $book['id'] ?>, '<?= htmlspecialchars($book['title'], ENT_QUOTES) ?>', '<?= htmlspecialchars($book['author'], ENT_QUOTES) ?>')">
                                     Edit
                                 </button>
-                                <!--delete button -->
-                                <a href="index.php?action=delete&id=<?= $book['id'] ?>"
-                                              class="btn btn-danger">
-                                    Delete
-                                </a>
+                                <form action="index.php" method="POST" class="edit-form">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?= $book['id'] ?>">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -168,19 +171,19 @@
         </table>
     </div>
 
-    <!-- edit popup -->
     <div id="editModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">Edit Book</div>
-            <form action="index.php?action=update" method="POST">
+            <form action="index.php" method="POST">
+                <input type="hidden" name="action" value="update">
                 <input type="hidden" name="id" id="edit-id">
                 <div class="modal-body">
                     <div>
-                        <label style="font-size: 12px; font-weight: bold; color: #555;">Title</label>
+                        <label>Title</label>
                         <input type="text" name="title" id="edit-title" required style="width: 100%; margin-top: 4px;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; font-weight: bold; color: #555;">Author</label>
+                        <label>Author</label>
                         <input type="text" name="author" id="edit-author" required style="width: 100%; margin-top: 4px;">
                     </div>
                 </div>
@@ -202,13 +205,6 @@
 
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('editModal');
-            if (event.target === modal) {
-                closeEditModal();
-            }
         }
     </script>
 

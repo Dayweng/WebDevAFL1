@@ -3,17 +3,9 @@ require_once 'controllers/BookController.php';
 session_start();
 
 $controller = new BookController();
-$action = $_GET['action'] ?? 'index';
 
-// Simple routing mechanism
-if ($action === 'create') {
-    $controller->create();
-} elseif ($action === 'toggle') {
-    $controller->toggle();
-} elseif ($action === 'update') {
-    $controller->update();
-} elseif ($action === 'delete') {
-    $controller->delete();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $controller->handlePost();
 } else {
     $controller->index();
 }
