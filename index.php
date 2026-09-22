@@ -11,6 +11,8 @@ if ($action === 'create') {
     $controller->create();
 } elseif ($action === 'toggle') {
     $controller->toggle();
+} elseif ($action === 'update') {
+    $controller->update();
 } elseif ($action === 'delete') {
     $controller->delete();
 } else {
