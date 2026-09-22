@@ -26,20 +26,33 @@ class BookController {
         exit;
     }
 
-    // Action: Add a new book
+    // Action: Add new book
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title'] ?? '');
             $author = trim($_POST['author'] ?? '');
-            $is_borrowed = isset($_POST['is_borrowed']) ? (bool)$_POST['is_borrowed'] : false;
 
             if (!empty($title) && !empty($author)) {
-                // 1. Tell Model to create a new book
-                Book::create($title, $author, $is_borrowed);
+                Book::create($title, $author);
             }
         }
 
-        // 2. Redirect back to main list
+        header('Location: index.php');
+        exit;
+    }
+
+    // Action: Update title and author
+    public function update() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = (int)($_POST['id'] ?? 0);
+            $title = trim($_POST['title'] ?? '');
+            $author = trim($_POST['author'] ?? '');
+
+            if ($id > 0 && !empty($title) && !empty($author)) {
+                Book::update($id, $title, $author);
+            }
+        }
+
         header('Location: index.php');
         exit;
     }
@@ -48,12 +61,9 @@ class BookController {
     public function delete() {
         if (isset($_GET['id'])) {
             $id = (int)$_GET['id'];
-
-            // 1. Tell Model to delete the book
             Book::delete($id);
         }
 
-        // 2. Redirect back to main list
         header('Location: index.php');
         exit;
     }

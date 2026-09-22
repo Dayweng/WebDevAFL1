@@ -1,28 +1,24 @@
 <?php
 
 class Book {
-    // Mock database array stored in session memory for simplicity
+
     private static function getBooks() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
         if (!isset($_SESSION['books'])) {
-            $_SESSION['books'] = [
-                1 => ['id' => 1, 'title' => '1984', 'author' => 'George Orwell', 'is_borrowed' => false],
-                2 => ['id' => 2, 'title' => 'To Kill a Mockingbird', 'author' => 'Harper Lee', 'is_borrowed' => false],
-                3 => ['id' => 3, 'title' => 'The Great Gatsby', 'author' => 'F. Scott Fitzgerald', 'is_borrowed' => true]
-            ];
+            $_SESSION['books'] = [];
         }
+
         return $_SESSION['books'];
     }
 
-    // Retrieve all books
+    //get books
     public static function all() {
         return self::getBooks();
     }
 
-    // Business Logic: Toggle borrowed status
+    //borrow or return book
     public static function toggleBorrow($id) {
         $books = self::getBooks();
         if (isset($books[$id])) {
@@ -33,25 +29,36 @@ class Book {
         return false;
     }
 
-    // Business Logic: Add new book (Create)
-    public static function create($title, $author, $is_borrowed = false) {
+    //create new book
+    public static function create($title, $author) {
         $books = self::getBooks();
 
-        // Generate new ID sederhana
         $newId = empty($books) ? 1 : max(array_keys($books)) + 1;
 
         $books[$newId] = [
             'id' => $newId,
             'title' => $title,
             'author' => $author,
-            'is_borrowed' => (bool)$is_borrowed
+            'is_borrowed' => false
         ];
 
         $_SESSION['books'] = $books;
         return true;
     }
 
-    // Business Logic: Delete book by ID (Delete)
+    //update book title and author
+    public static function update($id, $title, $author) {
+        $books = self::getBooks();
+        if (isset($books[$id])) {
+            $books[$id]['title'] = $title;
+            $books[$id]['author'] = $author;
+            $_SESSION['books'] = $books;
+            return true;
+        }
+        return false;
+    }
+
+    //delete book
     public static function delete($id) {
         $books = self::getBooks();
         if (isset($books[$id])) {

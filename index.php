@@ -1,7 +1,6 @@
 <?php
-session_start();
-
 require_once 'controllers/BookController.php';
+session_start();
 
 $controller = new BookController();
 $action = $_GET['action'] ?? 'index';
