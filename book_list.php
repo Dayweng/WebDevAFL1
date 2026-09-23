@@ -14,7 +14,7 @@
             margin: 0;
         }
         .container {
-            max-width: 750px;
+            max-width: 1100px;
             margin: 0 auto;
             background: #ffffff;
             padding: 24px;
@@ -44,7 +44,7 @@
         }
 
         /* Table css */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table { width: 100%; min-width: 950px; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
         th { background-color: #f1f3f5; font-size: 14px; color: #555; }
         tr:hover { background-color: #fafafa; }
@@ -102,6 +102,7 @@
         .modal-header { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
         .modal-body { display: flex; flex-direction: column; gap: 12px; }
         .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
+        .table-wrapper { overflow-x: auto; }
     </style>
 </head>
 
@@ -114,6 +115,12 @@
             <p class="error-message"><?= htmlspecialchars($error) ?></p>
         <?php endif; ?>
 
+        <form action="index.php" method="POST" class="add-form">
+            <input type="hidden" name="action" value="register_member">
+            <input type="text" name="name" placeholder="Member name" required>
+            <button type="submit" class="btn btn-primary">Register Member</button>
+        </form>
+
         <!-- create book -->
         <form action="index.php" method="POST" class="add-form">
             <input type="hidden" name="action" value="create">
@@ -123,12 +130,14 @@
         </form>
 
         <!-- book table -->
+        <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Author</th>
                     <th>Status</th>
+                    <th>Borrower</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -145,14 +154,39 @@
                                     <span class="badge available">Available</span>
                                 <?php endif; ?>
                             </td>
+                            <td>
+                                <?php if ($book->is_borrowed && isset($members[$book->borrower_id])): ?>
+                                    <?= htmlspecialchars($members[$book->borrower_id]->name) ?>
+                                <?php elseif ($book->is_borrowed): ?>
+                                    Unknown member
+                                <?php else: ?>
+                                    &mdash;
+                                <?php endif; ?>
+                            </td>
                             <td class="actions">
-                                <form action="index.php" method="POST" class="edit-form">
-                                    <input type="hidden" name="action" value="toggle">
-                                    <input type="hidden" name="id" value="<?= $book->getId() ?>">
-                                    <button type="submit" class="btn btn-toggle">
-                                        <?= $book->is_borrowed ? 'Return' : 'Borrow' ?>
-                                    </button>
-                                </form>
+                                <?php if ($book->is_borrowed): ?>
+                                    <form action="index.php" method="POST" class="edit-form">
+                                        <input type="hidden" name="action" value="return">
+                                        <input type="hidden" name="id" value="<?= $book->getId() ?>">
+                                        <button type="submit" class="btn btn-toggle">Return</button>
+                                    </form>
+                                <?php elseif (!empty($members)): ?>
+                                    <form action="index.php" method="POST" class="edit-form">
+                                        <input type="hidden" name="action" value="borrow">
+                                        <input type="hidden" name="id" value="<?= $book->getId() ?>">
+                                        <select name="member_id" required>
+                                            <option value="">Select member</option>
+                                            <?php foreach ($members as $member): ?>
+                                                <option value="<?= $member->getId() ?>">
+                                                    <?= htmlspecialchars($member->name) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <button type="submit" class="btn btn-toggle">Borrow</button>
+                                    </form>
+                                <?php else: ?>
+                                    <span>Register a member first</span>
+                                <?php endif; ?>
                                 <button type="button"
                                         class="btn btn-warning"
                                         onclick="openEditModal(<?= $book->getId() ?>, '<?= htmlspecialchars($book->title, ENT_QUOTES) ?>', '<?= htmlspecialchars($book->author, ENT_QUOTES) ?>')">
@@ -168,11 +202,12 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="4" style="text-align: center; color: #888;">No books found.</td>
+                        <td colspan="5" style="text-align: center; color: #888;">No books found.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
+        </div>
     </div>
 
     <!-- Edit Modal -->
