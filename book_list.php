@@ -132,10 +132,10 @@
                 <?php if (!empty($books)): ?>
                     <?php foreach ($books as $book): ?>
                         <tr>
-                            <td><?= htmlspecialchars($book['title']) ?></td>
-                            <td><?= htmlspecialchars($book['author']) ?></td>
+                            <td><?= htmlspecialchars($book->title) ?></td>
+                            <td><?= htmlspecialchars($book->author) ?></td>
                             <td>
-                                <?php if ($book['is_borrowed']): ?>
+                                <?php if ($book->is_borrowed): ?>
                                     <span class="badge borrowed">Checked Out</span>
                                 <?php else: ?>
                                     <span class="badge available">Available</span>
@@ -144,19 +144,19 @@
                             <td class="actions">
                                 <form action="index.php" method="POST" class="edit-form">
                                     <input type="hidden" name="action" value="toggle">
-                                    <input type="hidden" name="id" value="<?= $book['id'] ?>">
+                                    <input type="hidden" name="id" value="<?= $book->id ?>">
                                     <button type="submit" class="btn btn-toggle">
-                                        <?= $book['is_borrowed'] ? 'Return' : 'Borrow' ?>
+                                        <?= $book->is_borrowed ? 'Return' : 'Borrow' ?>
                                     </button>
                                 </form>
                                 <button type="button"
                                         class="btn btn-warning"
-                                        onclick="openEditModal(<?= $book['id'] ?>, '<?= htmlspecialchars($book['title'], ENT_QUOTES) ?>', '<?= htmlspecialchars($book['author'], ENT_QUOTES) ?>')">
+                                        onclick="openEditModal(<?= $book->id ?>, '<?= htmlspecialchars($book->title, ENT_QUOTES) ?>', '<?= htmlspecialchars($book->author, ENT_QUOTES) ?>')">
                                     Edit
                                 </button>
                                 <form action="index.php" method="POST" class="edit-form">
                                     <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?= $book['id'] ?>">
+                                    <input type="hidden" name="id" value="<?= $book->id ?>">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
                             </td>
@@ -171,6 +171,7 @@
         </table>
     </div>
 
+    <!-- Edit Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">Edit Book</div>

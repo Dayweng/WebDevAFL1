@@ -1,5 +1,5 @@
 <?php
-require_once 'controllers/BookController.php';
+require_once 'BookController.php';
 session_start();
 
 $controller = new BookController();
