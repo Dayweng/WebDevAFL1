@@ -110,6 +110,10 @@
     <div class="container">
         <h2>Darren's Library Catalog</h2>
 
+        <?php if ($error !== ''): ?>
+            <p class="error-message"><?= htmlspecialchars($error) ?></p>
+        <?php endif; ?>
+
         <!-- create book -->
         <form action="index.php" method="POST" class="add-form">
             <input type="hidden" name="action" value="create">
@@ -144,19 +148,19 @@
                             <td class="actions">
                                 <form action="index.php" method="POST" class="edit-form">
                                     <input type="hidden" name="action" value="toggle">
-                                    <input type="hidden" name="id" value="<?= $book->id ?>">
+                                    <input type="hidden" name="id" value="<?= $book->getId() ?>">
                                     <button type="submit" class="btn btn-toggle">
                                         <?= $book->is_borrowed ? 'Return' : 'Borrow' ?>
                                     </button>
                                 </form>
                                 <button type="button"
                                         class="btn btn-warning"
-                                        onclick="openEditModal(<?= $book->id ?>, '<?= htmlspecialchars($book->title, ENT_QUOTES) ?>', '<?= htmlspecialchars($book->author, ENT_QUOTES) ?>')">
+                                        onclick="openEditModal(<?= $book->getId() ?>, '<?= htmlspecialchars($book->title, ENT_QUOTES) ?>', '<?= htmlspecialchars($book->author, ENT_QUOTES) ?>')">
                                     Edit
                                 </button>
                                 <form action="index.php" method="POST" class="edit-form">
                                     <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?= $book->id ?>">
+                                    <input type="hidden" name="id" value="<?= $book->getId() ?>">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
                             </td>

@@ -2,7 +2,7 @@
 
 class Book
 {
-    public $id;
+    private $id;
     public $title;
     public $author;
     public $is_borrowed;
@@ -14,25 +14,9 @@ class Book
         $this->author = $author;
         $this->is_borrowed = $is_borrowed;
     }
-}
 
-function getAllBooks()
-{
-    if (!isset($_SESSION['books'])) {
-        $_SESSION['books'] = [];
+    public function getId()
+    {
+        return $this->id;
     }
-
-    foreach ($_SESSION['books'] as $id => $book) {
-        if (is_array($book)) {
-            $bookObject = new Book(
-                $book['id'],
-                $book['title'],
-                $book['author'],
-                $book['is_borrowed']
-            );
-            $_SESSION['books'][$id] = $bookObject;
-        }
-    }
-
-    return $_SESSION['books'];
 }
